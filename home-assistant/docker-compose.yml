@@ -1,0 +1,92 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    network_mode: host
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_DIR}/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+
+  #mosquitto:
+  #  image: eclipse-mosquitto:2
+  #  container_name: mosquitto
+  #  environment:
+  #    - TZ=${TZ}
+  #  volumes:
+  #    - ${CONFIG_DIR}/mosquitto/config:/mosquitto/config
+  #    - ${CONFIG_DIR}/mosquitto/data:/mosquitto/data
+  #    - ${CONFIG_DIR}/mosquitto/log:/mosquitto/log
+  #  ports:
+  #    - ${MQTT_PORT}:1883
+  #    - ${MQTT_WS_PORT}:9001
+  #  restart: unless-stopped
+
+  #zigbee2mqtt:
+  #  image: koenkk/zigbee2mqtt:latest
+  #  container_name: zigbee2mqtt
+  #  depends_on:
+  #    - mosquitto
+  #  environment:
+  #    - TZ=${TZ}
+  #  volumes:
+  #    - ${CONFIG_DIR}/zigbee2mqtt:/app/data
+  #    - /run/udev:/run/udev:ro
+  #  devices:
+  #    - ${ZIGBEE_ADAPTER_PATH}:${ZIGBEE_ADAPTER_PATH}
+  #  ports:
+  #    - ${ZIGBEE2MQTT_PORT}:8080
+  #  restart: unless-stopped
+
+  #zwavejsui:
+  #  image: zwavejs/zwave-js-ui:latest
+  #  container_name: zwavejsui
+  #  environment:
+  #    - TZ=${TZ}
+  #  volumes:
+  #    - ${CONFIG_DIR}/zwavejsui:/usr/src/app/store
+  #  devices:
+  #    - ${ZWAVE_ADAPTER_PATH}:${ZWAVE_ADAPTER_PATH}
+  #  ports:
+  #    - ${ZWAVEJSUI_PORT}:8091
+  #    - 3000:3000
+  #  restart: unless-stopped
+
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    user: ${PUID}:${PGID}
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_DIR}/nodered:/data
+    ports:
+      - ${NODERED_PORT}:1880
+    restart: unless-stopped
+
+  #esphome:
+  #  image: ghcr.io/esphome/esphome:latest
+  #  container_name: esphome
+  #  environment:
+  #    - TZ=${TZ}
+  #  volumes:
+  #    - ${CONFIG_DIR}/esphome:/config
+  #  ports:
+  #    - ${ESPHOME_PORT}:6052
+  #  restart: unless-stopped
+
+  matter-server:
+    image: ghcr.io/home-assistant-libs/python-matter-server:stable
+    container_name: matter-server
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_DIR}/matter-server:/data
+    ports:
+      - ${MATTER_PORT}:5580
+    restart: unless-stopped

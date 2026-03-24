@@ -1,4 +1,54 @@
 services:
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VERSION=docker
+      - PLEX_CLAIM=${PLEX_CLAIM}
+    volumes:
+      - ${CONFIG_DIR}/plex:/config
+      - ${MEDIA_DIR}:/data/media
+      - ${DOWNLOADS_DIR}:/downloads
+    ports:
+      - 32400:32400
+    restart: unless-stopped
+
+  dispatcharr:
+    image: ${DISPATCHARR_IMAGE:-ghcr.io/dispatcharr/dispatcharr:latest}
+    container_name: dispatcharr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONFIG_DIR}/dispatcharr:/config
+      - ${MEDIA_DIR}:/media
+      - ${DOWNLOADS_DIR}:/downloads
+    ports:
+      - 9191:9191
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+    volumes:
+      - ${CONFIG_DIR}/qbittorrent:/config
+      - ${DOWNLOADS_DIR}:/downloads
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
@@ -69,13 +119,4 @@ services:
       - 8191:8191
     restart: unless-stopped
 
-  notifiarr:
-    image: golift/notifiarr:latest
-    container_name: notifiarr
-    environment:
-      - TZ=${TZ}
-    volumes:
-      - ${CONFIG_DIR}/notifiarr:/config
-    ports:
-      - 5454:5454
-    restart: unless-stopped
+
