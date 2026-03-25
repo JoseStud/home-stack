@@ -11,14 +11,3 @@ services:
       - ${NODE_EXPORTER_PORT:-9100}:9100
     restart: unless-stopped
 
-  upsnap:
-    cap_add:
-      - NET_RAW # NET_RAW is required for privileged ping
-    cap_drop:
-      - ALL
-    container_name: upsnap
-    image: ${UPSNAP_IMAGE:-ghcr.io/seriousm4x/upsnap:5} # images are also available on docker hub: seriousm4x/upsnap:5
-    network_mode: host # host is required for WOL magic packets
-    restart: unless-stopped
-    volumes:
-      - ${UPSNAP_DATA_DIR:-./data}:/app/pb_data
