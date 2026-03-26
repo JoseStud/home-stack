@@ -6,3 +6,4 @@ services:
       - "8000:8000"
     volumes:
       - ./sillytavern-data:/home/node/app/data
+      - ./config:/home/node/app/config

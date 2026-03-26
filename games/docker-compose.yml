@@ -1,0 +1,61 @@
+services:
+
+  # --- ROM Library Management (RomM) ---
+  romm:
+    image: rommapp/romm:latest
+    container_name: romm
+    restart: unless-stopped
+    depends_on:
+      romm-db:
+        condition: service_healthy
+      romm-redis:
+        condition: service_healthy
+    environment:
+      - TZ=Etc/UTC
+      - DB_HOST=romm-db
+      - DB_PORT=3306
+      - DB_USER=romm
+      - DB_PASSWD=romm_change_me
+      - DB_NAME=romm
+      - ROMM_DB_DRIVER=mariadb
+      - REDIS_HOST=romm-redis
+      - REDIS_PORT=6379
+      - ROMM_AUTH_SECRET_KEY=change_me_to_a_long_random_secret
+    volumes:
+      - ./romm/library:/romm/library
+      - ./romm/resources:/romm/resources
+      - ./romm/assets:/romm/assets
+      - ./romm/config:/romm/config
+    ports:
+      - "8085:8080"
+
+  romm-db:
+    image: mariadb:11
+    container_name: romm-db
+    restart: unless-stopped
+    environment:
+      - MARIADB_ROOT_PASSWORD=romm_root_change_me
+      - MARIADB_DATABASE=romm
+      - MARIADB_USER=romm
+      - MARIADB_PASSWORD=romm_change_me
+    volumes:
+      - ./romm/mariadb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u$$MARIADB_USER -p$$MARIADB_PASSWORD || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  romm-redis:
+    image: redis:7-alpine
+    container_name: romm-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ./romm/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
