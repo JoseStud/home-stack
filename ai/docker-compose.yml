@@ -1,0 +1,10 @@
+services:
+  sillytavern:
+    image: ghcr.io/sillytavern/sillytavern:latest
+    container_name: sillytavern
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./sillytavern-data:/home/node/app/data
+    depends_on:
+      - koboldcpp
