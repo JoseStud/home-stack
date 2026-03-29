@@ -52,7 +52,8 @@ This stack is in `n8n/` and includes:
 1. `cd n8n`
 2. `cp .env.example .env`
 3. Create n8n data directory: `mkdir -p data`
-4. Start services: `docker compose up -d`
+4. Ensure write permissions for n8n: `sudo chown -R 1000:1000 data` (or match `PUID`/`PGID` in `.env`)
+5. Start services: `docker compose up -d`
 
 ### Service Access
 
