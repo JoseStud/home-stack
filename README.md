@@ -7,6 +7,7 @@ Docker Compose stacks for home services, designed for a Raspberry Pi 5 host.
 - `media/`: Prometheus Node Exporter, Plex, Dispatcharr, qBittorrent, Sonarr, Radarr, Prowlarr, Bazarr, FlareSolverr, Notifiarr
 - `home-assistant/`: Home Assistant suite (Home Assistant, Mosquitto, Zigbee2MQTT, Z-Wave JS UI, Node-RED, ESPHome, Matter Server)
 - `management/`: Host monitoring + Wake-on-LAN tools (Node Exporter, UpSnap)
+- `n8n/`: Workflow automation (n8n)
 
 ## Usage
 
@@ -23,14 +24,14 @@ This stack is in `management/` and includes:
 - `node-exporter`: Exposes host metrics for Prometheus scraping
 - `upsnap`: Web UI for Wake-on-LAN device control
 
-### Setup
+### Setup (management)
 
 1. `cd management`
 2. `cp .env.example .env`
 3. Create UpSnap data directory: `mkdir -p data`
 4. Start services: `docker compose up -d`
 
-### Service Access
+### Service Access (management)
 
 - Node Exporter metrics: `http://<host-ip>:9100/metrics` (or your `NODE_EXPORTER_PORT`)
 - UpSnap UI: `http://<host-ip>:8090` (default UpSnap UI port on host network mode)
@@ -39,3 +40,20 @@ This stack is in `management/` and includes:
 
 - `upsnap` uses host networking so it can send WOL magic packets to your LAN.
 - `upsnap` requires `NET_RAW` capability for ping-based status checks.
+
+## n8n Stack
+
+This stack is in `n8n/` and includes:
+
+- `n8n`: Workflow automation and integrations
+
+### Setup
+
+1. `cd n8n`
+2. `cp .env.example .env`
+3. Create n8n data directory: `mkdir -p data`
+4. Start services: `docker compose up -d`
+
+### Service Access
+
+- n8n UI: `http://<host-ip>:5678` (or your configured `N8N_PORT`)

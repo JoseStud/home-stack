@@ -1,0 +1,17 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    environment:
+      - TZ=${TZ}
+      - GENERIC_TIMEZONE=${TZ}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - N8N_EDITOR_BASE_URL=${N8N_EDITOR_BASE_URL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+    volumes:
+      - ${N8N_DATA_DIR}:/home/node/.n8n
+    ports:
+      - ${N8N_PORT:-5678}:5678
+    restart: unless-stopped
