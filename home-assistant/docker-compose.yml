@@ -5,6 +5,9 @@ services:
     network_mode: host
     security_opt:
       - apparmor:unconfined
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
     environment:
       - TZ=${TZ}
     volumes:
