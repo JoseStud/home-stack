@@ -3,6 +3,8 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
     network_mode: host
+    security_opt:
+      - apparmor:unconfined
     environment:
       - TZ=${TZ}
     volumes:
