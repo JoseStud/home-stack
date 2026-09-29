@@ -9,6 +9,9 @@ Docker Compose stacks for home services, designed for a Raspberry Pi 5 host.
 - `management/`: Host monitoring + Wake-on-LAN tools (Node Exporter, UpSnap)
 - `n8n/`: Workflow automation (n8n)
 
+The media library itself lives on a phone, not on the Pi. See
+[docs/phone-media-server.md](docs/phone-media-server.md).
+
 ## Usage
 
 For any stack directory:
@@ -16,6 +19,30 @@ For any stack directory:
 1. Copy the example env file: `cp .env.example .env`
 2. Adjust values in `.env` for your system paths, timezone, and device mappings
 3. Start the stack: `docker compose up -d`
+
+## Media Stack
+
+This stack is in `media/`. `MEDIA_DIR` (default `/mnt/media`) holds `movies/`
+and `tv/`, and `DOWNLOADS_DIR` holds qBittorrent's downloads.
+
+### Setup (media)
+
+1. `cd media`
+2. `cp .env.example .env`
+3. Mount the media folders at `MEDIA_DIR/movies` and `MEDIA_DIR/tv`. In the
+   author's setup these are sshfs mounts of a phone's storage, which also runs
+   a standby Plex server: see [docs/phone-media-server.md](docs/phone-media-server.md).
+4. Start services: `docker compose up -d`
+
+### Service Access (media)
+
+Plex `:32400`, Dispatcharr `:9191`, qBittorrent `:8080`, Sonarr `:8989`,
+Radarr `:7878`, Prowlarr `:9696`, Bazarr `:6767`, FlareSolverr `:8191`.
+
+### Notes
+
+- Sonarr, Radarr and Bazarr break if `MEDIA_DIR` is unreachable at start. If
+  the mount source moves, remount first and then start them.
 
 ## Management Stack
 
